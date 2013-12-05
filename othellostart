@@ -1,0 +1,61 @@
+#!/bin/bash
+
+pos="WEEEEEEEEEEEEEEEEEEEEEEEEEEEOXEEEEEEXOEEEEEEEEEEEEEEEEEEEEEEEEEEE"
+java Printer $pos
+
+white="$1"
+black="$2"
+endgame="no"
+whitepass="no"
+blackpass="no"
+tomove="black"
+
+while [ "$endgame" != "yes" ]
+do
+    echo ""
+    echo ""
+    echo "White to move"
+    echo $pos
+    move=`$white $pos 5`
+    echo $move
+    pos=`java Mover "$pos" "$move"`
+    if [ "$move" == "pass" ]
+    then
+	whitepass="yes"
+	if [ "$blackpass" == "yes" ]
+	then
+	    endgame="yes"
+	fi
+    else
+	whitepass="no"
+    fi
+    java Printer $pos
+    
+    if [ "$endgame" != "yes" ]
+    then
+	echo ""
+	echo ""
+	echo "Black to move"
+	echo $pos
+	move=`$black $pos 5`
+	echo $move
+	pos=`java Mover "$pos" "$move"`
+	if [ "$move" == "pass" ]
+	then
+	    blackpass="yes"
+	    if [ "$whitepass" == "yes" ]
+	    then
+		endgame="yes"
+	    fi
+	else
+	    blackpass="no"
+	fi
+	java Printer $pos
+    fi
+done
+
+whitecount=`java Counter "$pos"`
+
+echo "Result. $white vs. $black : $whitecount"
+echo "$white vs. $black : $whitecount" >> results.txt
+
